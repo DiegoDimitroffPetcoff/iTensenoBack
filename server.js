@@ -3,12 +3,12 @@ const app = express()
 
 require("dotenv").config();
 
-const Factory = require("./utils/factory");
+const Factory = require("./SRC/factory/factory");
 const DBSChosen = process.argv[2] || "mongo";
 const DBS = Factory.getInstance(DBSChosen);
 DBS.connection(DBSChosen);
 
-const Routes = require('./routes/routes')
+const Routes = require('./SRC/routes/routes')
 const PORT = process.env.PORT || 3000;
 
 const routes = new Routes()
