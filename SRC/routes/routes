@@ -6,6 +6,7 @@ route.use(express.json());
 route.use(express.urlencoded({ extended: true }));
 
 const UserModel = require("../dbs/mongodb/models/users");
+const Controller = require("../controllers/controllers")
 
 //PASSPORT SETTINGS---------------------------------------------
 const session = require("express-session");
@@ -95,12 +96,12 @@ passport.deserializeUser((id, callback) => {
 //---------------------------------------------
 
 class Routes {
-  constructor() {}
+  constructor() {
+    this.controller = new Controller();
+  }
   start() {
     // HOME (Pagina principal)---------------------------------------------
-    route.get("/", function (req, res) {
-      res.json(" HOME INICIO");
-    });
+    route.get("/", this.controller.home);
     // REGISTRARSE (Pagina SignOut)---------------------------------------------
     route.post(
       "/signout",
@@ -137,6 +138,10 @@ class Routes {
         res.json("Ud no esta logeado");
       }
     });
+    // TECNOLOGIAS (ver tecnologias)---------------------------------------------
+    route.get("/allTech", this.controller.readTech);
+    route.post("/searchTech", this.controller.searchTech);
+
     //RUTA 404
     route.get("*", function (req, res) {
       res.status(404).json({ error: " 404 ruta no encontrada" });
