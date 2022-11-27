@@ -6,7 +6,7 @@ route.use(express.json());
 route.use(express.urlencoded({ extended: true }));
 
 const UserModel = require("../dbs/mongodb/models/users");
-const Controller = require("../controllers/controllers")
+const Controller = require("../controllers/controllers");
 
 //PASSPORT SETTINGS---------------------------------------------
 const session = require("express-session");
@@ -73,6 +73,7 @@ passport.use(
           email: req.body.email,
           username: username,
           password: createHash(password),
+          points: { SumaDeVotosH: 0, VotantesCantidad: 0, Averange: 0 },
         };
 
         UserModel.create(newUser, (err, userWithId) => {
@@ -141,7 +142,7 @@ class Routes {
     // TECNOLOGIAS (ver tecnologias)---------------------------------------------
     route.get("/allTech", this.controller.readTech);
     route.post("/searchTech", this.controller.searchTech);
-
+    route.post("/vote", this.controller.vote);
     //RUTA 404
     route.get("*", function (req, res) {
       res.status(404).json({ error: " 404 ruta no encontrada" });
