@@ -6,6 +6,7 @@ route.use(express.json());
 route.use(express.urlencoded({ extended: true }));
 
 const UserModel = require("../dbs/mongodb/models/users");
+const Controller = require("../controllers/controllers");
 
 //PASSPORT SETTINGS---------------------------------------------
 const session = require("express-session");
@@ -72,6 +73,7 @@ passport.use(
           email: req.body.email,
           username: username,
           password: createHash(password),
+          points: { SumaDeVotosH: 0, VotantesCantidad: 0, Averange: 0 },
         };
 
         UserModel.create(newUser, (err, userWithId) => {
@@ -95,19 +97,21 @@ passport.deserializeUser((id, callback) => {
 //---------------------------------------------
 
 class Routes {
-  constructor() {}
+  constructor() {
+    this.controller = new Controller();
+  }
   start() {
     // HOME (Pagina principal)---------------------------------------------
-    route.get("/", function (req, res) {
-      res.json(" HOME INICIO");
-    });
+    route.get("/", this.controller.getHome);
+    route.post("/", this.controller.postHome);
+   
     // REGISTRARSE (Pagina SignOut)---------------------------------------------
     route.post(
       "/signout",
       passport.authenticate("signup"),
       function (req, res) {
         if (req.isAuthenticated()) {
-          res.json("Registro Exitoso");
+          res.redirect("/userHome");
         } else {
           res.json("Error en el Registro");
         }
@@ -115,12 +119,13 @@ class Routes {
     );
     // LOGEARSE (Pagina Login)---------------------------------------------
     route.post("/login", passport.authenticate("login"), function (req, res) {
-      if (req.isAuthenticated()) {
-        res.json("Login Exitoso");
+      if (req.isAuthenticated()) {        
+        res.redirect("/userHome");
       } else {
         res.json("Error en el Logeo");
       }
     });
+    route.get("/userHome", this.controller.userHome);
     // DESLOGEARSE ---------------------------------------------
     route.get("/logout", function (req, res) {
       req.logout((err) => {
@@ -137,6 +142,10 @@ class Routes {
         res.json("Ud no esta logeado");
       }
     });
+    // TECNOLOGIAS (ver tecnologias)---------------------------------------------
+    route.get("/allTech", this.controller.readTech);
+    route.post("/searchTech", this.controller.searchTech);
+    route.post("/vote", this.controller.vote);
     //RUTA 404
     route.get("*", function (req, res) {
       res.status(404).json({ error: " 404 ruta no encontrada" });
