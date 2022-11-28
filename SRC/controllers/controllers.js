@@ -8,14 +8,12 @@ const validationNull = require("../utils/validationNull");
 class Controllers {
   constructor() {}
 
-  async home(req, res) {
+  async getHome(req, res) {
     // if (req.isAuthenticated()) {
     let data = {
       allTech: await TechModel.find(),
-      allusers: await UserModel.find(),
-      userSearched: validationNull(
-        await TechModel.findOne({ name: req.body.name })
-      ),
+      allusers: await UserModel.find()
+      
     };
 
     // console.log(data);
@@ -23,6 +21,32 @@ class Controllers {
     // } else {
     //   res.json("Usuario no logeado");
     // }
+  }
+
+  async postHome(req, res) {
+    console.log(req.body.name);
+    let data = {
+      userSearched: validationNull(
+        await TechModel.findOne({ name: req.body.name })
+      ),
+    };
+    res.json(data);
+  }
+
+
+
+  async userHome(req, res) {
+    if (req.isAuthenticated()) {
+      console.log(req.body)
+    let data = {
+      allTech: await TechModel.find(),
+      allusers: await UserModel.find()
+    };
+
+    res.json(data);
+    } else {
+      res.json("Usuario no logeado");
+    }
   }
 
   async readTech(req, res) {
