@@ -103,7 +103,10 @@ class Routes {
   start() {
     // HOME (Pagina principal)---------------------------------------------
     route.get("/", this.controller.getHome);
-    route.post("/", this.controller.postHome);
+    route.post("/", this.controller.searchTech);
+    route.get("/userHome", this.controller.getUserHome);
+    route.post("/userHome", this.controller.postUserHome);
+   
    
     // REGISTRARSE (Pagina SignOut)---------------------------------------------
     route.post(
@@ -125,7 +128,7 @@ class Routes {
         res.json("Error en el Logeo");
       }
     });
-    route.get("/userHome", this.controller.userHome);
+    
     // DESLOGEARSE ---------------------------------------------
     route.get("/logout", function (req, res) {
       req.logout((err) => {
@@ -144,7 +147,7 @@ class Routes {
     });
     // TECNOLOGIAS (ver tecnologias)---------------------------------------------
     route.get("/allTech", this.controller.readTech);
-    route.post("/searchTech", this.controller.searchTech);
+    
     route.post("/vote", this.controller.vote);
     //RUTA 404
     route.get("*", function (req, res) {
