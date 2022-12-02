@@ -102,14 +102,16 @@ class Routes {
   }
   start() {
     // HOME (Pagina principal)---------------------------------------------
-    route.get("/", this.controller.home);
+    route.get("/", this.controller.getHome);
+    route.post("/", this.controller.postHome);
+   
     // REGISTRARSE (Pagina SignOut)---------------------------------------------
     route.post(
       "/signout",
       passport.authenticate("signup"),
       function (req, res) {
         if (req.isAuthenticated()) {
-          res.json("Registro Exitoso");
+          res.redirect("/userHome");
         } else {
           res.json("Error en el Registro");
         }
@@ -117,12 +119,13 @@ class Routes {
     );
     // LOGEARSE (Pagina Login)---------------------------------------------
     route.post("/login", passport.authenticate("login"), function (req, res) {
-      if (req.isAuthenticated()) {
-        res.json("Login Exitoso");
+      if (req.isAuthenticated()) {        
+        res.redirect("/userHome");
       } else {
         res.json("Error en el Logeo");
       }
     });
+    route.get("/userHome", this.controller.userHome);
     // DESLOGEARSE ---------------------------------------------
     route.get("/logout", function (req, res) {
       req.logout((err) => {
