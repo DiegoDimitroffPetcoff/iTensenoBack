@@ -35,15 +35,36 @@ class Controllers {
 
 
 
-  async userHome(req, res) {
+  async getUserHome(req, res) {
     if (req.isAuthenticated()) {
       console.log(req.body)
     let data = {
       allTech: await TechModel.find(),
       allusers: await UserModel.find()
     };
-
     res.json(data);
+    } else {
+      res.json("Usuario no logeado");
+    }
+  }
+  async   postUserHome(req, res) {
+    if (req.isAuthenticated()) {
+            let userUpdate = await UserModel.updateOne(
+        {
+          firstName: req.body.SearchByName,
+        },
+        {
+          $set: {
+            firstName:req.body.firstName,
+            lastName:req.body.lastName,
+            aboutMe: req.body.aboutMe,
+            socialNet:req.body.socialNet,
+          },
+        }
+      );
+
+
+    res.redirect("userHome");
     } else {
       res.json("Usuario no logeado");
     }
