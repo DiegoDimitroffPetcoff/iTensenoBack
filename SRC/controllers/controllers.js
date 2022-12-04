@@ -33,11 +33,9 @@ class Controllers {
     res.json(data);
   }
 
-
-
   async getUserHome(req, res) {
     if (req.isAuthenticated()) {
-      console.log(req.body)
+      console.log("REDIRECCIONADO A RUTA GET> /USERHOME")
     let data = {
       allTech: await TechModel.find(),
       allusers: await UserModel.find()
@@ -47,11 +45,11 @@ class Controllers {
       res.json("Usuario no logeado");
     }
   }
-  async   postUserHome(req, res) {
+  async postUserHome(req, res) {
     if (req.isAuthenticated()) {
             let userUpdate = await UserModel.updateOne(
         {
-          firstName: req.body.SearchByName,
+          username: req.body.SearchByName,
         },
         {
           $set: {
@@ -59,10 +57,12 @@ class Controllers {
             lastName:req.body.lastName,
             aboutMe: req.body.aboutMe,
             socialNet:req.body.socialNet,
+            phonenumber:req.body.phonenumber,
           },
         }
       );
-
+      console.log(req.body.SearchByName);
+console.log(userUpdate);
 
     res.redirect("userHome");
     } else {
@@ -93,12 +93,12 @@ class Controllers {
     //   }
   }
   async vote(req, res) {
-    // console.log(req.body.name.toUpperCase());
-    // if (req.isAuthenticated()) {
+
+    if (req.isAuthenticated()) {
 
     let user = await UserModel.findOne({
       // Se envia por el body el nombre a puntuar: {name: Laura}
-      firstName: req.body.name,
+      username: req.body.name,
     });
     let VotoNuevo = req.body.VotoNuevo;
     let SumaDeVotosH = await user.points.SumaDeVotosH;
@@ -109,7 +109,7 @@ class Controllers {
     // actualizacion del usuario
     let userUpdate = await UserModel.updateOne(
       {
-        firstName: req.body.name,
+        username: req.body.name,
       },
       {
         $set: {
@@ -121,11 +121,11 @@ class Controllers {
         },
       }
     );
-
+    console.log(userUpdate);
     res.json(prueba);
-    //   } else {
-    //     res.json("Usuario no logeado");
-    //   }
+      } else {
+        res.json("Usuario no logeado");
+      }
   }
 }
 
