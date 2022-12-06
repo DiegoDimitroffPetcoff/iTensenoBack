@@ -128,7 +128,7 @@ class Controllers {
 
     );
     console.log(allusers);
-    res.send(map1);
+    res.redirect("/userHome");
     //   } else {
     //     res.json("Usuario no logeado");
     //   }
