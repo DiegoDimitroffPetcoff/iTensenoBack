@@ -8,7 +8,7 @@ const UsersSchema = new mongoose.Schema({
   lastName: { type: String, required: false, max: 100 },
   socialNet: { type: String, required: false, max: 100 },
   phonenumber: { type: Number, required: false },
-  
+  tech: { type: String, required: false, max: 100 },
   aboutMe: { type: String, required: false, max: 100 },
   points: {type: Object, required: true}
 });
