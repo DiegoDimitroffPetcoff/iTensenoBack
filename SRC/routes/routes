@@ -104,6 +104,10 @@ class Routes {
     // HOME (Pagina principal)---------------------------------------------
     route.get("/", this.controller.getHome);
     route.post("/", this.controller.searchTech);
+
+    route.get("/profile/:id", this.controller.profile);
+
+
     route.get("/userHome", this.controller.getUserHome);
     route.post("/userHome", this.controller.postUserHome);
    

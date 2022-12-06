@@ -39,6 +39,20 @@ class Controllers {
       res.json("Usuario no logeado");
     }
   }
+  
+  async profile(req, res) {
+    // if (req.isAuthenticated()) {
+
+    let data = {
+      user: await UserModel.findOne({_id: req.params.id}),
+   
+    };
+    res.json(data);
+    // } else {
+    //   res.json("Usuario no logeado");
+    // }
+  }
+
 
   async postUserHome(req, res) {
     if (req.isAuthenticated()) {
