@@ -81,7 +81,7 @@ class Controllers {
     // }
   }
 
-  async addTechToUser(req, res) {
+  async searchTech(req, res) {
     // console.log(req.body.name.toUpperCase());
     // if (req.isAuthenticated()) {
 
