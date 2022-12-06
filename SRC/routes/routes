@@ -61,7 +61,7 @@ passport.use(
           return done(err);
         }
         if (user) {
-          console.log(`This User already exist. Try with some other `);
+          console.log(`This User already exist. Try with some other _ Este Usuario ya existe. Intenta con otro`);
           return done(null, false);
         }
 
@@ -149,6 +149,7 @@ class Routes {
     route.get("/allTech", this.controller.readTech);
     
     route.post("/vote", this.controller.vote);
+    route.post("/addTechToUser", this.controller.addTechToUser)
     //RUTA 404
     route.get("*", function (req, res) {
       res.status(404).json({ error: " 404 ruta no encontrada" });
