@@ -128,29 +128,29 @@ class Controllers {
     //   }
   }
   }
-  async searchTech(req, res) {
-    // console.log(req.body.name.toUpperCase());
-    // if (req.isAuthenticated()) {
-    let techSearched = await TechModel.findOne({
-      name: req.body.name.toUpperCase(),
-    });
-    console.log(techSearched.users);
-    let allusers = [];
-    const map1 = techSearched.users.map(async x =>
-      allusers.push(
-      await UserModel.find({
-        _id: techSearched.users,
-      })
-// return allusers
-    )
+//   async searchTech(req, res) {
+//     // console.log(req.body.name.toUpperCase());
+//     // if (req.isAuthenticated()) {
+//     let techSearched = await TechModel.findOne({
+//       name: req.body.name.toUpperCase(),
+//     });
+//     console.log(techSearched.users);
+//     let allusers = [];
+//     const map1 = techSearched.users.map(async x =>
+//       allusers.push(
+//       await UserModel.find({
+//         _id: techSearched.users,
+//       })
+// // return allusers
+//     )
 
-    );
-    console.log(allusers);
-    res.redirect("/userHome");
-    //   } else {
-    //     res.json("Usuario no logeado");
-    //   }
-  }
+//     );
+//     console.log(allusers);
+//     res.redirect("/userHome");
+//     //   } else {
+//     //     res.json("Usuario no logeado");
+//     //   }
+//   }
   async vote(req, res) {
     if (req.isAuthenticated()) {
       let user = await UserModel.findOne({
