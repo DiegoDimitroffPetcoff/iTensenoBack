@@ -9,17 +9,12 @@ class Controllers {
   constructor() {}
 
   async getHome(req, res) {
-    // if (req.isAuthenticated()) {
     let data = {
-      allTech: await TechModel.find(),
-      allusers: await UserModel.find(),
+      allTech: await TechModel.find({},{users:0,_id:0}),
+      allusers: await UserModel.find()      
     };
-
-    // console.log(data);
     res.json(data);
-    // } else {
-    //   res.json("Usuario no logeado");
-    // }
+
   }
 
   async postHome(req, res) {
@@ -34,19 +29,24 @@ class Controllers {
 
   async getUserHome(req, res) {
     if (req.isAuthenticated()) {
-      console.log("REDIRECCIONADO A RUTA GET> /USERHOME");
-      let data = {
-        allTech: await TechModel.find(),
-        allusers: await UserModel.find(),
-      };
-      res.json(data);
+      console.log("REDIRECCIONADO A RUTA GET> /USERHOME")
+    let data = {
+      allTech: await TechModel.find({},{users:0,_id:0}),
+      allusers: await UserModel.find()
+    };
+    res.json(data);
     } else {
       res.json("Usuario no logeado");
     }
   }
+
   async postUserHome(req, res) {
     if (req.isAuthenticated()) {
-      let userUpdate = await UserModel.updateOne(
+
+      let tech = await TechModel.findOne({name:req.body.tech.toUpperCase()});
+  
+
+            let userUpdate = await UserModel.updateOne(
         {
           username: req.body.SearchByName,
         },
@@ -55,8 +55,9 @@ class Controllers {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             aboutMe: req.body.aboutMe,
-            socialNet: req.body.socialNet,
-            phonenumber: req.body.phonenumber,
+            socialNet:req.body.socialNet,
+            phonenumber:req.body.phonenumber,
+            tech: req.body.tech.toUpperCase()
           },
         }
       );
@@ -71,8 +72,9 @@ class Controllers {
 
   async readTech(req, res) {
     // if (req.isAuthenticated()) {
-    let tech = await TechModel.find();
+    let tech = await TechModel.find({},{users:0,_id:0});
     console.log(tech);
+
     res.json(tech);
     // } else {
     //   res.json("Usuario no logeado");
@@ -82,9 +84,25 @@ class Controllers {
   async addTechToUser(req, res) {
     // console.log(req.body.name.toUpperCase());
     // if (req.isAuthenticated()) {
-    let techSearched = await TechModel.findOne({
-      name: req.body.tech.toUpperCase(),
+
+      let tech = await TechModel.findOne({name:req.body.name.toUpperCase()});
+      console.log(tech.name);
+    let techSearched = await UserModel.find({
+      tech:tech.name,
     });
+
+    // let usersSearched = await UserModel.find({
+    //   _id: techSearched,
+    // });
+    res.json( techSearched);
+    //   } else {
+    //     res.json("Usuario no logeado");
+    //   }
+  }
+
+  async vote(req, res) {
+
+    if (req.isAuthenticated()) {
 
     let userSearched = await UserModel.findOne({
       username: req.body.name,
@@ -109,7 +127,7 @@ class Controllers {
     //     res.json("Usuario no logeado");
     //   }
   }
-
+  }
   async searchTech(req, res) {
     // console.log(req.body.name.toUpperCase());
     // if (req.isAuthenticated()) {

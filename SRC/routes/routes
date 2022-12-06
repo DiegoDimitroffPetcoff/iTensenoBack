@@ -137,7 +137,7 @@ class Routes {
         }
       });
     });
-    // RUTA DE PRUEBA (Solo la vera el usuario logeado)---------------------------------------------
+    // RUTA DE PRUEBA (Solo la vera el usuario logeado)-------------------------
     route.get("/test", function (req, res) {
       if (req.isAuthenticated()) {
         res.json("Ud. Esta logeado correctamente");
