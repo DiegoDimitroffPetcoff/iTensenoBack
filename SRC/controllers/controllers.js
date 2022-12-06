@@ -114,7 +114,7 @@ class Controllers {
     // console.log(req.body.name.toUpperCase());
     // if (req.isAuthenticated()) {
     let techSearched = await TechModel.findOne({
-      name: req.body.tech.toUpperCase(),
+      name: req.body.name.toUpperCase(),
     });
     console.log(techSearched.users);
     let allusers = [];
