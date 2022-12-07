@@ -61,7 +61,7 @@ passport.use(
           return done(err);
         }
         if (user) {
-          console.log(`This User already exist. Try with some other `);
+          console.log(`This User already exist. Try with some other _ Este Usuario ya existe. Intenta con otro`);
           return done(null, false);
         }
 
@@ -104,6 +104,10 @@ class Routes {
     // HOME (Pagina principal)---------------------------------------------
     route.get("/", this.controller.getHome);
     route.post("/", this.controller.searchTech);
+
+    route.get("/profile/:id", this.controller.profile);
+
+
     route.get("/userHome", this.controller.getUserHome);
     route.post("/userHome", this.controller.postUserHome);
    
@@ -114,7 +118,7 @@ class Routes {
       passport.authenticate("signup"),
       function (req, res) {
         if (req.isAuthenticated()) {
-          res.redirect("/userHome");
+          res.json("Logeo Exitoso");
         } else {
           res.json("Error en el Registro");
         }
@@ -123,7 +127,7 @@ class Routes {
     // LOGEARSE (Pagina Login)---------------------------------------------
     route.post("/login", passport.authenticate("login"), function (req, res) {
       if (req.isAuthenticated()) {        
-        res.redirect("/userHome");
+        res.json("Logeo Exitoso");;
       } else {
         res.json("Error en el Logeo");
       }
@@ -137,7 +141,7 @@ class Routes {
         }
       });
     });
-    // RUTA DE PRUEBA (Solo la vera el usuario logeado)---------------------------------------------
+    // RUTA DE PRUEBA (Solo la vera el usuario logeado)-------------------------
     route.get("/test", function (req, res) {
       if (req.isAuthenticated()) {
         res.json("Ud. Esta logeado correctamente");
@@ -149,6 +153,7 @@ class Routes {
     route.get("/allTech", this.controller.readTech);
     
     route.post("/vote", this.controller.vote);
+    // route.post("/addTechToUser", this.controller.addTechToUser)
     //RUTA 404
     route.get("*", function (req, res) {
       res.status(404).json({ error: " 404 ruta no encontrada" });
