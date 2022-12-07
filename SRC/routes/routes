@@ -126,8 +126,10 @@ class Routes {
     );
     // LOGEARSE (Pagina Login)---------------------------------------------
     route.post("/login", passport.authenticate("login"), function (req, res) {
+      let response = res.req.user
       if (req.isAuthenticated()) {        
-        res.json("Logeo Exitoso");;
+        res.json({id:response._id, username: response.username});
+   
       } else {
         res.json("Error en el Logeo");
       }

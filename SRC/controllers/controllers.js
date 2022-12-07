@@ -27,7 +27,9 @@ class Controllers {
   }
 
   async getUserHome(req, res) {
-    if (req.isAuthenticated()) {
+
+    // console.log(req, req.isAuthenticated(), "esto es la rew")
+    if (req) {
       console.log("REDIRECCIONADO A RUTA GET> /USERHOME");
       let data = {
         allTech: await TechModel.find({}, { users: 0, _id: 0 }),
