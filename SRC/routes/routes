@@ -102,7 +102,7 @@ class Routes {
   }
   start() {
     // HOME (Pagina principal)---------------------------------------------
-    route.get("/", this.controller.getHome);
+    route.get("/", this.controller.getgitHome);
     route.post("/", this.controller.searchTech);
 
     route.get("/profile/:id", this.controller.profile);
@@ -118,7 +118,7 @@ class Routes {
       passport.authenticate("signup"),
       function (req, res) {
         if (req.isAuthenticated()) {
-          res.redirect("/userHome");
+          res.json("Logeo Exitoso");
         } else {
           res.json("Error en el Registro");
         }
@@ -127,7 +127,7 @@ class Routes {
     // LOGEARSE (Pagina Login)---------------------------------------------
     route.post("/login", passport.authenticate("login"), function (req, res) {
       if (req.isAuthenticated()) {        
-        res.redirect("/userHome");
+        res.json("Logeo Exitoso");;
       } else {
         res.json("Error en el Logeo");
       }
