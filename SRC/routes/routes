@@ -102,7 +102,7 @@ class Routes {
   }
   start() {
     // HOME (Pagina principal)---------------------------------------------
-    route.get("/", this.controller.getgitHome);
+    route.get("/", this.controller.getHome);
     route.post("/", this.controller.searchTech);
 
     route.get("/profile/:id", this.controller.profile);
