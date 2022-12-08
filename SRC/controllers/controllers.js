@@ -54,8 +54,8 @@ class Controllers {
   }
 
   async postUserHome(req, res) {
-    if (req.isAuthenticated()) {
-      let tech = await TechModel.findOne({ name: req.body.tech.toUpperCase() });
+    // if (req.isAuthenticated()) {
+      let tech = await TechModel.findOne({ name: req.body.tech && req.body.tech.toUpperCase() });
 
       let userUpdate = await UserModel.updateOne(
         {
@@ -68,7 +68,7 @@ class Controllers {
             aboutMe: req.body.aboutMe,
             socialNet: req.body.socialNet,
             phonenumber: req.body.phonenumber,
-            tech: req.body.tech.toUpperCase(),
+            tech: req.body.tech && req.body.tech.toUpperCase(),
           },
         }
       );
@@ -76,9 +76,9 @@ class Controllers {
       console.log(userUpdate);
 
       res.redirect("userHome");
-    } else {
-      res.json("Usuario no logeado");
-    }
+    // } else {
+      // res.json("Usuario no logeado");
+    // }
   }
 
   async readTech(req, res) {
