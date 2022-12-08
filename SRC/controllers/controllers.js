@@ -94,7 +94,7 @@ class Controllers {
     // console.log(req.body.name.toUpperCase());
     // if (req.isAuthenticated()) {
     try {
-      let tech = await TechModel.findOne({ name: req.body.name });
+      let tech = await TechModel.findOne({ name: req.params.name });
       console.log(tech.name);
       let techSearched = await UserModel.find({
         tech: tech.name,
