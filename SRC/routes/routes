@@ -117,8 +117,9 @@ class Routes {
       "/signout",
       passport.authenticate("signup"),
       function (req, res) {
+        let respon = res.req.user
         if (req.isAuthenticated()) {
-          res.json("Logeo Exitoso");
+          res.json({id:respon._id, username: respon.username});
         } else {
           res.json("Error en el Registro");
         }
