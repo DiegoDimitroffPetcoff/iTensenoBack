@@ -108,6 +108,7 @@ class Controllers {
   }
 
   async vote(req, res) {
+    
     if (req.isAuthenticated()) {
       let userSearched = await UserModel.findOne({
         username: req.body.name,
@@ -157,7 +158,7 @@ class Controllers {
   //     //   }
   //   }
   async vote(req, res) {
-    if (req.isAuthenticated()) {
+    //if (req.isAuthenticated()) {
       let user = await UserModel.findOne({
         // Se envia por el body el nombre a puntuar: {name: Laura}
         username: req.body.name,
@@ -185,9 +186,9 @@ class Controllers {
       );
       console.log(userUpdate);
       res.json(prueba);
-    } else {
-      res.json("Usuario no logeado");
-    }
+   // } else {
+     // res.json("Usuario no logeado");
+    //}
   }
 }
 
