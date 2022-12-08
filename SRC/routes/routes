@@ -6,6 +6,7 @@ route.use(express.json());
 route.use(express.urlencoded({ extended: true }));
 
 const UserModel = require("../dbs/mongodb/models/users");
+const Controller = require("../controllers/controllers");
 
 //PASSPORT SETTINGS---------------------------------------------
 const session = require("express-session");
@@ -15,135 +16,155 @@ const validatePass = require("../utils/passValidatos");
 const createHash = require("../utils/hashGenerator");
 const { TIEMPO_EXPIRACION } = require("../globals/globals");
 route.use(
-  session({
-    secret: "nocountry",
-    cookie: {
-      httpOnly: false,
-      secure: false,
-      maxAge: parseInt(TIEMPO_EXPIRACION),
-    },
-    rolling: true,
-    resave: true,
-    saveUninitialized: true,
-  })
+    session({
+        secret: "nocountry",
+        cookie: {
+            httpOnly: false,
+            secure: false,
+            maxAge: parseInt(TIEMPO_EXPIRACION),
+        },
+        rolling: true,
+        resave: true,
+        saveUninitialized: true,
+    })
 );
 route.use(passport.initialize());
 route.use(passport.session());
 passport.use(
-  "login",
-  new LocalStrategy((username, password, done) => {
-    UserModel.findOne({ username: username }, (err, user) => {
-      if (err) {
-        return done(err);
-      }
-      if (!user) {
-        console.log("User not finded");
-        return done(null, false);
-      }
-      if (!validatePass(user, password)) {
-        console.log("password or user invalid");
-        return done(null, false);
-      }
+    "login",
+    new LocalStrategy((username, password, done) => {
+        UserModel.findOne({ username: username }, (err, user) => {
+            if (err) {
+                return done(err);
+            }
+            if (!user) {
+                console.log("User not finded");
+                return done(null, false);
+            }
+            if (!validatePass(user, password)) {
+                console.log("password or user invalid");
+                return done(null, false);
+            }
 
-      return done(null, user);
-    });
-  })
+            return done(null, user);
+        });
+    })
 );
 passport.use(
-  "signup",
-  new LocalStrategy(
-    { passReqToCallback: true },
-    (req, username, password, done) => {
-      UserModel.findOne({ username: username }, (err, user) => {
-        if (err) {
-          console.log(`some issue happened: ${err}`);
-          return done(err);
-        }
-        if (user) {
-          console.log(`This User already exist. Try with some other `);
-          return done(null, false);
-        }
+    "signup",
+    new LocalStrategy({ passReqToCallback: true },
+        (req, username, password, done) => {
+            UserModel.findOne({ username: username }, (err, user) => {
+                if (err) {
+                    console.log(`some issue happened: ${err}`);
+                    return done(err);
+                }
+                if (user) {
+                    console.log(`This User already exist. Try with some other _ Este Usuario ya existe. Intenta con otro`);
+                    return done(null, false);
+                }
 
-        const newUser = {
-          firstName: req.body.firstName,
-          lastName: req.body.lastName,
-          socialNet: req.body.socialNet,
-          phonenumber: req.body.phonenumber,
-          email: req.body.email,
-          username: username,
-          password: createHash(password),
-        };
+                const newUser = {
+                    firstName: req.body.firstName,
+                    lastName: req.body.lastName,
+                    socialNet: req.body.socialNet,
+                    phonenumber: req.body.phonenumber,
+                    email: req.body.email,
+                    username: username,
+                    password: createHash(password),
+                    points: { SumaDeVotosH: 0, VotantesCantidad: 0, Averange: 0 },
+                };
 
-        UserModel.create(newUser, (err, userWithId) => {
-          if (err) {
-            console.log(`some issue happened: ${err}`);
-            return done(err);
-          }
-          return done(null, userWithId);
-        });
-      });
-    }
-  )
+                UserModel.create(newUser, (err, userWithId) => {
+                    console.log(userWithId);
+                    if (err) {
+                        console.log(`some issue happened: ${err}`);
+                        return done(err);
+                    }
+                    return done(null, userWithId);
+                });
+            });
+        }
+    )
 );
 passport.serializeUser((user, callback) => {
-  callback(null, user._id);
+    callback(null, user._id);
 });
 passport.deserializeUser((id, callback) => {
-  UserModel.findById(id, callback);
+    UserModel.findById(id, callback);
 });
 
 //---------------------------------------------
 
 class Routes {
-  constructor() {}
-  start() {
-    // HOME (Pagina principal)---------------------------------------------
-    route.get("/", function (req, res) {
-      res.json(" HOME INICIO");
-    });
-    // REGISTRARSE (Pagina SignOut)---------------------------------------------
-    route.post(
-      "/signout",
-      passport.authenticate("signup"),
-      function (req, res) {
-        if (req.isAuthenticated()) {
-          res.json("Registro Exitoso");
-        } else {
-          res.json("Error en el Registro");
-        }
-      }
-    );
-    // LOGEARSE (Pagina Login)---------------------------------------------
-    route.post("/login", passport.authenticate("login"), function (req, res) {
-      if (req.isAuthenticated()) {
-        res.json("Login Exitoso");
-      } else {
-        res.json("Error en el Logeo");
-      }
-    });
-    // DESLOGEARSE ---------------------------------------------
-    route.get("/logout", function (req, res) {
-      req.logout((err) => {
-        if (!err) {
-          res.json("Deslogeado correctamente");
-        }
-      });
-    });
-    // RUTA DE PRUEBA (Solo la vera el usuario logeado)---------------------------------------------
-    route.get("/test", function (req, res) {
-      if (req.isAuthenticated()) {
-        res.json("Ud. Esta logeado correctamente");
-      } else {
-        res.json("Ud no esta logeado");
-      }
-    });
-    //RUTA 404
-    route.get("*", function (req, res) {
-      res.status(404).json({ error: " 404 ruta no encontrada" });
-    });
+    constructor() {
+        this.controller = new Controller();
+    }
+    start() {
+        // HOME (Pagina principal)---------------------------------------------
+        route.get("/", this.controller.getHome);
+        route.post("/", this.controller.searchTech);
 
-    return route;
-  }
+        route.get("/profile/:id", this.controller.profile);
+
+
+        route.get("/userHome", this.controller.getUserHome);
+        route.post("/userHome", this.controller.postUserHome);
+
+
+        // REGISTRARSE (Pagina SignOut)---------------------------------------------
+        route.post(
+            "/signout",
+            passport.authenticate("signup"),
+
+            function(req, res) {
+              console.log(req)
+                if (req.isAuthenticated()) {
+                    res.json(req.user);;
+                } else {
+                    res.json("Error en el Registro");
+                }
+            }
+        );
+        // LOGEARSE (Pagina Login)---------------------------------------------
+        route.post("/login", passport.authenticate("login"), function(req, res) {
+            if (req.isAuthenticated()) {
+                console.log('sada', res.user);
+                console.log('adDad', req.user);
+                res.json(req.user);;
+            } else {
+                res.json("Error en el Logeo");
+            }
+        });
+
+        // DESLOGEARSE ---------------------------------------------
+        route.get("/logout", function(req, res) {
+            req.logout((err) => {
+                if (!err) {
+                    res.json("Deslogeado correctamente");
+                }
+            });
+        });
+        // RUTA DE PRUEBA (Solo la vera el usuario logeado)-------------------------
+        route.get("/test", function(req, res) {
+            if (req.isAuthenticated()) {
+                res.json("Ud. Esta logeado correctamente");
+            } else {
+                res.json("Ud no esta logeado");
+            }
+        });
+        // TECNOLOGIAS (ver tecnologias)---------------------------------------------
+        route.get("/allTech", this.controller.readTech);
+
+        route.post("/vote", this.controller.vote);
+        // route.post("/addTechToUser", this.controller.addTechToUser)
+        //RUTA 404
+        route.get("*", function(req, res) {
+            res.status(404).json({ error: " 404 ruta no encontrada" });
+        });
+
+        return route;
+    }
 }
 
 module.exports = Routes;
